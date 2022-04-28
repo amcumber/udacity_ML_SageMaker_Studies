@@ -133,3 +133,4 @@ dmypy.json
 data.zip
 data/
 __MACOSX/
+.pw
