@@ -1,8 +1,12 @@
-from __future__ import print_function
+# from __future__ import print_function # unecessary for >py3
 
 import argparse
 import os
 import pandas as pd
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 
 # sklearn.externals.joblib is deprecated in 0.21 and will be removed in 0.23. 
 # from sklearn.externals import joblib
@@ -25,7 +29,41 @@ def model_fn(model_dir):
     
     return model
 
+def get_model():
+    return Pipeline([
+        ('scaler', StandardScaler()),
+        ('tree', DecisionTreeClassifier(max_depth=4)),
+    ])
 
+def get_training_data(training_dir) -> tuple[np.ndarray, np.ndarray]:
+    # MOVED to function for encapsulation
+    
+    train_data = pd.read_csv(os.path.join(training_dir, "train.csv"), header=None, names=None)
+
+    # Labels are in the first column
+    train_y = train_data.iloc[:,0]
+    train_x = train_data.iloc[:,1:]
+    return train_x, train_y
+
+def main(train_x, train_x, model) -> None:
+    """Main Entrypoint"""
+    train_x, train_y = get_training_data(training_dir)
+    ## --- Your code here --- ##
+    
+
+    ## TODO: Define a model 
+    model = get_model()
+     
+    ## TODO: Train the model
+    model.fit(train_x, train_y)
+      
+    ## --- End of your code  --- ##
+    
+
+    # Save the trained model
+    joblib.dump(model, os.path.join(args.model_dir, "model.joblib"))
+
+    
 ## TODO: Complete the main code
 if __name__ == '__main__':
     
@@ -48,26 +86,7 @@ if __name__ == '__main__':
 
     # Read in csv training file
     training_dir = args.data_dir
-    train_data = pd.read_csv(os.path.join(training_dir, "train.csv"), header=None, names=None)
-
-    # Labels are in the first column
-    train_y = train_data.iloc[:,0]
-    train_x = train_data.iloc[:,1:]
+    
+    # --- [ACM] -- Moved data handling code into a main function
     
     
-    ## --- Your code here --- ##
-    
-
-    ## TODO: Define a model 
-    model = None
-    
-    
-    ## TODO: Train the model
-    
-    
-    
-    ## --- End of your code  --- ##
-    
-
-    # Save the trained model
-    joblib.dump(model, os.path.join(args.model_dir, "model.joblib"))
